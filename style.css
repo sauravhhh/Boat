@@ -668,3 +668,30 @@ body {
     background: rgba(30,30,30,0.9);
     color: white;
       }
+
+/* Boat song button */
+.music-toggle {
+    position: absolute;
+    top: 76px;
+    right: 20px;
+    background: rgba(255,255,255,0.9);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.music-toggle:hover {
+    background: white;
+    transform: scale(1.05);
+}
+
+.music-toggle.night {
+    background: rgba(30,30,30,0.9);
+    color: white;
+}
