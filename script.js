@@ -1,49 +1,26 @@
-// Boat song — "Row, Row, Row Your Boat" (public domain), soft music-box style
-const musicToggle = document.getElementById('musicToggle');
-const SONG = [
-    ['C4', 1], ['C4', 1], ['C4', 1], ['D4', 1], ['E4', 2],
-    ['E4', 1], ['D4', 1], ['E4', 1], ['F4', 1], ['G4', 2],
-    ['C5', 1], ['C5', 1], ['C5', 1], ['G4', 1], ['G4', 1], ['G4', 1],
-    ['E4', 1], ['E4', 1], ['E4', 1], ['C4', 1], ['C4', 1], ['C4', 1],
-    ['G4', 1], ['F4', 1], ['E4', 1], ['D4', 1], ['C4', 3]
-];
-const FREQ = { C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, C5: 523.25 };
-const BEAT = 0.34; // seconds per beat
-let audioCtx = null, songTimer = null, songPlaying = false, noteIndex = 0;
-
-function playNote(freq, when, dur) {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0.0001, when);
-    gain.gain.exponentialRampToValueAtTime(0.18, when + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + dur);
-    osc.connect(gain).connect(audioCtx.destination);
-    osc.start(when);
-    osc.stop(when + dur + 0.05);
+// Background music from YouTube — "Bistirna Parore" by Bhupen Hazarika.
+// Hidden player, no button: it starts on the first tap or keypress
+// (browsers block sound before a user gesture) and loops.
+var ytTag = document.createElement('script');
+ytTag.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(ytTag);
+var ytPlayer = null;
+function onYouTubeIframeAPIReady() {
+    ytPlayer = new YT.Player('ytPlayer', {
+        width: '1', height: '1',
+        videoId: '0LXdS5cRbt0',
+        playerVars: { autoplay: 1, loop: 1, playlist: '0LXdS5cRbt0', controls: 0, disablekb: 1, fs: 0, modestbranding: 1, playsinline: 1 },
+        events: {
+            onReady: function (e) { e.target.setVolume(80); tryPlayMusic(); },
+            onStateChange: function (e) { if (e.data === YT.PlayerState.ENDED) e.target.playVideo(); }
+        }
+    });
 }
-
-function scheduleSong() {
-    if (!songPlaying) return;
-    const note = SONG[noteIndex], beats = note[1];
-    playNote(FREQ[note[0]], audioCtx.currentTime, beats * BEAT * 0.95);
-    noteIndex = (noteIndex + 1) % SONG.length;
-    songTimer = setTimeout(scheduleSong, beats * BEAT * 1000);
+function tryPlayMusic() {
+    if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
 }
-
-musicToggle.addEventListener('click', () => {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    songPlaying = !songPlaying;
-    if (songPlaying) {
-        noteIndex = 0;
-        musicToggle.textContent = '⏸️ Stop Song';
-        scheduleSong();
-    } else {
-        clearTimeout(songTimer);
-        musicToggle.textContent = '🎵 Play Boat Song';
-    }
+['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+    document.addEventListener(ev, tryPlayMusic);
 });
 
 // Boat control variables
@@ -91,7 +68,6 @@ modeToggle.addEventListener('click', () => {
         stars.classList.add('visible');
         modeToggle.textContent = '☀️ Day Mode';
         modeToggle.classList.add('night');
-        musicToggle.classList.add('night');
         
         // Hide birds
         birds.forEach(bird => bird.classList.add('night'));
@@ -108,7 +84,6 @@ modeToggle.addEventListener('click', () => {
         stars.classList.remove('visible');
         modeToggle.textContent = '🌙 Night Mode';
         modeToggle.classList.remove('night');
-        musicToggle.classList.remove('night');
         
         // Show birds
         birds.forEach(bird => bird.classList.remove('night'));
