@@ -1,4 +1,4 @@
-// Background music from YouTube — "Bistirna Parore" by Bhupen Hazarika.
+// Background music from YouTube — "Bistirna Dupare" (Bengali) by Bhupen Hazarika.
 // Hidden player, no button: it starts on the first tap or keypress
 // (browsers block sound before a user gesture) and loops.
 var ytTag = document.createElement('script');
@@ -8,8 +8,8 @@ var ytPlayer = null;
 function onYouTubeIframeAPIReady() {
     ytPlayer = new YT.Player('ytPlayer', {
         width: '1', height: '1',
-        videoId: '0LXdS5cRbt0',
-        playerVars: { autoplay: 1, loop: 1, playlist: '0LXdS5cRbt0', controls: 0, disablekb: 1, fs: 0, modestbranding: 1, playsinline: 1 },
+        videoId: 'XGeccjWtWnc',
+        playerVars: { autoplay: 1, loop: 1, playlist: 'XGeccjWtWnc', controls: 0, disablekb: 1, fs: 0, modestbranding: 1, playsinline: 1 },
         events: {
             onReady: function (e) { e.target.setVolume(80); tryPlayMusic(); },
             onStateChange: function (e) { if (e.data === YT.PlayerState.ENDED) e.target.playVideo(); }
